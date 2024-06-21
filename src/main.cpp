@@ -8,6 +8,5 @@ int main(int argc, char** argv) {
         return 1;
     }
     DataFrame df = DataFrame(string(ROOT_DIR) + "/" + argv[1]);
-    cout << df["Birthday"].count() << endl;
-    cout << df["Birthday"].dType() << endl;
+    df.describe();
 }

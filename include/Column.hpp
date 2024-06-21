@@ -17,7 +17,13 @@ public:
 
     enum DataType { FLOAT, BOOL, STRING, DATETIME };
 
-    DataType dType() const { return _inferredType; }
+    double   mean() const;
+    double   stddev() const;
+    double   min() const;
+    double   max() const;
+    double   percentile(double p) const;
+    double   count() const { return _data.size(); }
+    DataType type() const { return _inferredType; }
 
 private:
     bool isBoolean(const string& s) const;

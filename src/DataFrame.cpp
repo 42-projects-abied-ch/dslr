@@ -1,10 +1,15 @@
 #include "DataFrame.hpp"
 
 #include <cctype>
+#include <exception>
 #include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <sstream>
 
 #include "Row.hpp"
+
+using namespace std;
 
 Column& DataFrame::operator[](const string& columnName) {
     auto it = _columns.find(columnName);
@@ -35,6 +40,7 @@ void DataFrame::readCSV(const string& path) {
         headers = parseLine(line);
         for (const auto& header : headers) {
             _columns[header] = Column();
+            _headers.push_back(header);
         }
     }
 
@@ -65,4 +71,50 @@ Row DataFrame::parseLine(const string& line) const {
         }
     }
     return row;
+}
+
+void DataFrame::describe() const {
+    std::vector<std::string>         headers = {"Count", "Mean", "Std", "Min", "25%", "50%", "75%", "Max"};
+    std::vector<std::string>         features;
+    std::vector<std::vector<double>> stats(headers.size(), std::vector<double>());
+
+    for (const auto& [header, column] : _columns) {
+        if (column.type() == Column::DataType::FLOAT) {
+            features.push_back(header.substr(0, 7));
+            stats[0].push_back(column.count());
+            try {
+                stats[1].push_back(column.mean());
+            } catch (const exception& e) {
+                cerr << e.what() << endl;
+            }
+            try {
+                stats[2].push_back(column.stddev());
+            } catch (const exception& e) {
+                cerr << e.what() << endl;
+            }
+            stats[3].push_back(column.min());
+            try {
+                stats[4].push_back(column.percentile(0.25));
+                stats[5].push_back(column.percentile(0.50));
+                stats[6].push_back(column.percentile(0.75));
+            } catch (const exception& e) {
+                cerr << e.what() << endl;
+            }
+            stats[7].push_back(column.max());
+        }
+    }
+
+    std::cout << std::setw(10) << "";
+    for (const auto& feature : features) {
+        std::cout << std::setw(20) << feature;
+    }
+    std::cout << std::endl;
+
+    for (size_t i = 0; i < headers.size(); ++i) {
+        std::cout << std::setw(10) << headers[i];
+        for (size_t j = 0; j < features.size(); ++j) {
+            std::cout << std::setw(20) << std::fixed << std::setprecision(6) << stats[i][j];
+        }
+        std::cout << std::endl;
+    }
 }
