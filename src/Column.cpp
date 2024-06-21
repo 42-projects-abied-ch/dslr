@@ -1,9 +1,9 @@
 #include "Column.hpp"
 
-#include <string>
-#include <sstream>
-#include <iomanip>
 #include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <string>
 
 bool Column::isFloat(const string& s) const {
     char* end = nullptr;
@@ -18,9 +18,8 @@ bool Column::isBoolean(const string& s) const {
 }
 
 bool Column::isDateTime(const string& s) const {
-    tm tm = {};
+    tm            tm = {};
     istringstream ss(s);
-
     ss >> get_time(&tm, "%Y-%m-%d");
     return !ss.fail();
 }
