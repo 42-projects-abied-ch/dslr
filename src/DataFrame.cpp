@@ -1,5 +1,6 @@
 #include "DataFrame.hpp"
 
+#include <cctype>
 #include <fstream>
 #include <sstream>
 
@@ -45,6 +46,10 @@ void DataFrame::readCSV(const string& path) {
     }
 
     file.close();
+
+    for (auto& col : _columns) {
+        col.second.inferType();
+    }
 }
 
 Row DataFrame::parseLine(const string& line) const {

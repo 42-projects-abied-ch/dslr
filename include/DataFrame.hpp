@@ -21,8 +21,7 @@ private:
     unordered_map<string, Column> _columns;
 
     void readCSV(const string &path);
-
-    Row parseLine(const string &line) const;
+    Row  parseLine(const string &line) const;
 
     DataFrame() = default;
 };
