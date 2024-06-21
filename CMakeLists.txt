@@ -7,11 +7,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SOURCES
     src/main.cpp
-    src/Frog.cpp
+    src/DataFrame.cpp
+    src/Column.cpp
+    src/Row.cpp
 )
 
 set(HEADERS
-    include/Frog.hpp
+    include/DataFrame.hpp
+    include/Column.hpp
+    include/Row.hpp
 )
 
 set(ROOT_DIR "${CMAKE_SOURCE_DIR}")

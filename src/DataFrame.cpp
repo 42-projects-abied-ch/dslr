@@ -1,8 +1,9 @@
-#include "Frog.hpp"
+#include "DataFrame.hpp"
 
-#include <cstdint>
 #include <fstream>
 #include <sstream>
+
+#include "Row.hpp"
 
 Column& DataFrame::operator[](const string& columnName) {
     auto it = _columns.find(columnName);
@@ -20,7 +21,7 @@ Row DataFrame::operator[](size_t rowIndex) const {
     return row;
 }
 
-void DataFrame::loadCSV(const string& path) {
+void DataFrame::readCSV(const string& path) {
     ifstream file(path);
     if (!file.is_open()) {
         throw runtime_error("Could not open file: " + path);
@@ -59,14 +60,4 @@ Row DataFrame::parseLine(const string& line) const {
         }
     }
     return row;
-}
-
-const string& Row::operator[](int64_t index) {
-    if (index < 0) {
-        index = _data.size() + index;
-    }
-    if (index < 0 || index >= _data.size()) {
-        throw out_of_range("Index out of range");
-    }
-    return _data[index];
 }
