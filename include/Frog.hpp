@@ -5,10 +5,20 @@
 #include <unordered_map>
 #include <vector>
 
-
 using namespace std;
-typedef vector<string> Column;
 typedef vector<string> Row;
+
+class Column {
+public:
+    void push_back(const string& cell) { data.push_back(cell); }
+
+    size_t count() { return data.size(); }
+
+    const string& at(size_t index) const { return data.at(index); }
+
+private:
+    vector<string> data;
+};
 
 class DataFrame {
 public:
