@@ -1,7 +1,9 @@
 #include "Column.hpp"
 
+#include <cstdlib>
 #include <ctime>
 #include <iomanip>
+#include <limits>
 #include <sstream>
 #include <string>
 
@@ -21,7 +23,7 @@ bool Column::isDateTime(const string& s) const {
     tm            tm = {};
     istringstream ss(s);
     ss >> get_time(&tm, "%Y-%m-%d");
-    return !ss.fail();
+    return s == "none" || !ss.fail();
 }
 
 void Column::inferType() {
@@ -37,6 +39,21 @@ void Column::inferType() {
         } else {
             _inferredType = DataType::STRING;
             break;
+        }
+    }
+    if (_inferredType == DataType::FLOAT) {
+        convertFloatType();
+    }
+}
+
+void Column::convertFloatType() {
+    _floatData.reserve(_data.size());
+
+    for (const auto& s : _data) {
+        if (s == "none") {
+            _floatData.push_back(numeric_limits<double>::quiet_NaN());
+        } else {
+            _floatData.push_back(strtod(s.c_str(), nullptr));
         }
     }
 }

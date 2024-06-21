@@ -12,9 +12,11 @@ public:
     float                 count() { return _data.size(); }
     const string&         at(size_t index) const { return _data.at(index); }
     const vector<string>& getData() const { return _data; }
+    void                  inferType();
+    void                  convertFloatType();
 
     enum DataType { FLOAT, BOOL, STRING, DATETIME };
-    void     inferType();
+
     DataType dType() const { return _inferredType; }
 
 private:
@@ -24,6 +26,7 @@ private:
 
     vector<string> _data;
     DataType       _inferredType = DataType::STRING;
+    vector<double> _floatData;
 };
 
 #endif  //  COLUMN_HPP
