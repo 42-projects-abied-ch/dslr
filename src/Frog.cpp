@@ -1,5 +1,6 @@
 #include "Frog.hpp"
 
+#include <cstdint>
 #include <fstream>
 #include <sstream>
 
@@ -25,8 +26,8 @@ void DataFrame::loadCSV(const string& path) {
         throw runtime_error("Could not open file: " + path);
     }
 
-    string         line;
-    vector<string> headers;
+    string line;
+    Row    headers;
 
     if (getline(file, line)) {
         headers = parseLine(line);
@@ -58,4 +59,14 @@ Row DataFrame::parseLine(const string& line) const {
         }
     }
     return row;
+}
+
+const string& Row::operator[](int64_t index) {
+    if (index < 0) {
+        index = _data.size() + index;
+    }
+    if (index < 0 || index >= _data.size()) {
+        throw out_of_range("Index out of range");
+    }
+    return _data[index];
 }
