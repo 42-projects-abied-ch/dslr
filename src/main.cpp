@@ -8,5 +8,5 @@ int main(int argc, char** argv) {
         return 1;
     }
     DataFrame df = DataFrame(string(ROOT_DIR) + "/" + argv[1]);
-    cout << df["First Name"].count();
+    df.describe();
 }

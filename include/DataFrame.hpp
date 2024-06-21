@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "Column.hpp"
 
@@ -14,15 +15,17 @@ class Row;
 class DataFrame {
 public:
     DataFrame(const string &path) { readCSV(path); }
-    Column &operator[](const string &columnName);
-    Row     operator[](size_t rowIndex) const;
+    Column        &operator[](const string &columnName);
+    Row            operator[](size_t rowIndex) const;
+    vector<string> headers() const { return _headers; }
+    void           describe() const;
 
 private:
     unordered_map<string, Column> _columns;
+    vector<string>                _headers;
 
     void readCSV(const string &path);
-
-    Row parseLine(const string &line) const;
+    Row  parseLine(const string &line) const;
 
     DataFrame() = default;
 };

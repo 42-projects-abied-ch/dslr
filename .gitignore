@@ -11,3 +11,7 @@ compile_flags.txt
 # CACHE
 
 .cache/
+
+# TEST ENVIRONMENT
+
+venv/
