@@ -1,8 +1,11 @@
 #include "Column.hpp"
 
 #include <string>
+#include <sstream>
+#include <iomanip>
+#include <ctime>
+#include <chrono>
 
-using namespace std;
 bool Column::isFloat(const string& s) const {
     char* end = nullptr;
     strtod(s.c_str(), &end);
@@ -16,7 +19,11 @@ bool Column::isBoolean(const string& s) const {
 }
 
 bool Column::isDateTime(const string& s) const {
-    return false;
+    tm tm = {};
+    istringstream ss(s);
+
+    ss >> get_time(&tm, "%Y-%m-%d");
+    return !ss.fail();
 }
 
 void Column::inferType() {
