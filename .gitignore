@@ -6,3 +6,8 @@ build/
 
 .clang-format
 compile_flags.txt
+*.json
+
+# CACHE
+
+.cache/
