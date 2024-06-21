@@ -1,3 +1,8 @@
-# CACHE
+# BUILD
 
-*__pycache__*
+build/
+
+# LOCAL CONFIGS
+
+.clang-format
+compile_flags.txt
