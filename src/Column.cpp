@@ -126,7 +126,7 @@ double Column::percentile(double p) const {
     }
     sort(sortedVals.begin(), sortedVals.end());
     size_t n = sortedVals.size();
-    double rank = p * (n - 1);
+    double rank = p * (n + 1) - 1;
     size_t low = static_cast<size_t>(floor(rank));
     size_t high = static_cast<size_t>(ceil(rank));
     double weight = rank - low;
