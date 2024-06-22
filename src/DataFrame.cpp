@@ -74,9 +74,9 @@ Row DataFrame::parseLine(const string& line) const {
 }
 
 void DataFrame::describe() const {
-    std::vector<std::string>         headers = {"Count", "Mean", "Std", "Min", "25%", "50%", "75%", "Max"};
-    std::vector<std::string>         features;
-    std::vector<std::vector<double>> stats(headers.size(), std::vector<double>());
+    vector<string>        headers = {"Count", "Mean", "Std", "Min", "25%", "50%", "75%", "Max"};
+    vector<string>         features;
+    vector<vector<double>> stats(headers.size(), std::vector<double>());
 
     for (const auto& [header, column] : _columns) {
         if (column.type() == Column::DataType::FLOAT) {
@@ -104,17 +104,17 @@ void DataFrame::describe() const {
         }
     }
 
-    std::cout << std::setw(10) << "";
+    cout << setw(10) << "";
     for (const auto& feature : features) {
-        std::cout << std::setw(20) << feature;
+        cout << setw(20) << feature;
     }
-    std::cout << std::endl;
+    cout << endl;
 
     for (size_t i = 0; i < headers.size(); ++i) {
-        std::cout << std::setw(10) << headers[i];
+        cout << setw(10) << headers[i];
         for (size_t j = 0; j < features.size(); ++j) {
-            std::cout << std::setw(20) << std::fixed << std::setprecision(6) << stats[i][j];
+            cout << setw(20) << fixed << setprecision(6) << stats[i][j];
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 }
