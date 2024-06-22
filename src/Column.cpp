@@ -18,7 +18,7 @@ bool Column::isFloat(const string& s) const {
 
 bool Column::isBoolean(const string& s) const {
     string lower_s;
-    std::transform(s.begin(), s.end(), std::back_inserter(lower_s), ::tolower);
+    transform(s.begin(), s.end(), back_inserter(lower_s), tolower);
     return s == "none" || lower_s == "true" || lower_s == "false";
 }
 
