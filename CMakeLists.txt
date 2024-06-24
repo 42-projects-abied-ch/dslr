@@ -21,7 +21,9 @@ set(HEADERS
 set(ROOT_DIR "${CMAKE_SOURCE_DIR}")
 
 include_directories(include)
+add_subdirectory(matplotplusplus)
 
 add_executable(describe ${SOURCES} ${HEADERS})
+target_link_libraries(describe PUBLIC matplot)
 
 target_compile_definitions(describe PRIVATE ROOT_DIR="${ROOT_DIR}")

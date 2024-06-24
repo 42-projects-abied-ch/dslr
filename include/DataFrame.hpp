@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <matplot/matplot.h>
 
 #include "Column.hpp"
 
