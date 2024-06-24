@@ -18,7 +18,7 @@ bool Column::isFloat(const string& s) const {
 
 bool Column::isBoolean(const string& s) const {
     string lower_s;
-    transform(s.begin(), s.end(), back_inserter(lower_s), tolower);
+    std::transform(s.begin(), s.end(), back_inserter(lower_s), ::tolower);
     return s == "none" || lower_s == "true" || lower_s == "false";
 }
 
@@ -126,7 +126,7 @@ double Column::percentile(double p) const {
     }
     sort(sortedVals.begin(), sortedVals.end());
     size_t n = sortedVals.size();
-    double rank = p * (n + 1) - 1;
+    double rank = p * (n - 1);
     size_t low = static_cast<size_t>(floor(rank));
     size_t high = static_cast<size_t>(ceil(rank));
     double weight = rank - low;
