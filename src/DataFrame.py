@@ -101,6 +101,18 @@ class DataFrame:
             table_data[i].insert(0, headers[i])
         print(tabulate.tabulate(table_data, tablefmt='pretty'))
     
+    def get_numerical_columns(self):
+        columns = []
+        for header in self._columns:
+            if isinstance(self._columns[header].get_column_data()[0], str):
+                continue
+            if isinstance(
+                self._columns[header].get_column_data()[0], datetime.datetime
+            ):
+                continue
+            columns.append(header)
+        return columns
+
     def scale_features(self) -> None:
         """
         Standardize the features for faster convergence.
