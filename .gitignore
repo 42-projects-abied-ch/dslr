@@ -11,7 +11,11 @@ compile_flags.txt
 # CACHE
 
 .cache/
+__pycache__/
 
 # TEST ENVIRONMENT
 
 venv/
+
+# DS_STORE
+.DS_Store
