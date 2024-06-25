@@ -53,6 +53,20 @@ class DataFrame:
             }
         return description
     
+    def drop_non_numerical(self):
+        pop = []
+        for header in self._columns:
+            if isinstance(self._columns[header].get_column_data()[0], str):
+                pop.append(header)
+            elif isinstance(self._columns[header].get_column_data()[0], datetime.datetime):
+                pop.append(header)
+        for header in pop:
+            self._columns.pop(header)
+        for header in self._columns:
+            non_missing_values = [float(x) for x in self._columns[header]._data if x != '']
+            mean_value = sum(non_missing_values) / len(non_missing_values) if non_missing_values else 0.0
+            self._columns[header]._data = [float(x) if x != '' else mean_value for x in self._columns[header]._data]
+
     def print_describe(self):
         description = self.describe()
         table_data = list(map(list, zip(*[(k, *[format(val, '.6f') for val in v.values()]) for k, v in description.items()])))

@@ -1,8 +1,4 @@
 from DataFrame import DataFrame
-from Column import Column
-import pandas as pd
-import numpy as np
-
 
 if __name__ == '__main__':
     df = DataFrame()
