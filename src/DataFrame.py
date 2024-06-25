@@ -159,6 +159,12 @@ class DataFrame:
             ax.legend(loc='upper right')
             plt.show()
     
+    def fillna_with_mean(self):
+        for column in self._columns.values():
+            if isinstance(column.get_column_data()[0], (int, float)):
+                mean = column.mean()
+                column._data = [x if x != "" else mean for x in column._data]
+
     def pair_plot(self):
         data = {}
         num_columns = self.get_numerical_columns()
