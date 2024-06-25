@@ -11,6 +11,7 @@ compile_flags.txt
 # CACHE
 
 .cache/
+__pycache__/
 
 # TEST ENVIRONMENT
 
