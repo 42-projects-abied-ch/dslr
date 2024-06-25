@@ -56,6 +56,10 @@ class DataFrame:
                 pop.append(header)
         for header in pop:
             self._columns.pop(header)
+        for header in self._columns:
+            non_missing_values = [float(x) for x in self._columns[header]._data if x != '']
+            mean_value = sum(non_missing_values) / len(non_missing_values) if non_missing_values else 0.0
+            self._columns[header]._data = [float(x) if x != '' else mean_value for x in self._columns[header]._data]
 
     def print_describe(self):
         description = self.describe()
