@@ -1,8 +1,8 @@
 from DataFrame import DataFrame
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     df = DataFrame()
-    df.read_csv('datasets/dataset_test.csv')
+    df.read_csv("datasets/dataset_test.csv")
     df.print_describe()
     # Pandas describe to compare
     # pd.set_option('display.max_columns', None)
