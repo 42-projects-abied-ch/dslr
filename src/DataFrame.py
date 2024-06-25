@@ -66,6 +66,9 @@ class DataFrame:
             non_missing_values = [float(x) for x in self._columns[header]._data if x != '']
             mean_value = sum(non_missing_values) / len(non_missing_values) if non_missing_values else 0.0
             self._columns[header]._data = [float(x) if x != '' else mean_value for x in self._columns[header]._data]
+    
+    def get_numerical_columns(self):
+        return [header for header in self._columns if isinstance(self._columns[header].get_column_data_without_none()[0], (int, float))]
 
     def print_describe(self):
         description = self.describe()
@@ -93,9 +96,30 @@ class DataFrame:
     def get_rows_by_house(self, house):
         return [row for row in self._rows if row.get_value('Hogwarts House') == house]
     
-    def histogram_by_houses(self, feature):
+    def histogram_by_houses(self):
         data = {}
+        num_columns = self.get_numerical_columns()
+        for column in num_columns:
+            data[column] = {
+                RAVENCLAW : [],
+                SLYTHERIN : [],
+                HUFFLEPUFF : [],
+                GRYFFINDOR : []
+            }
         for house in [RAVENCLAW, SLYTHERIN, HUFFLEPUFF, GRYFFINDOR]:
-            data[house] = self.get_rows_by_house(house)
+            rows = self.get_rows_by_house(house)
+            for column in num_columns:
+                data[column][house] = [float(row.get_value(column)) for row in rows if row.get_value(column) != '']
+        for column in num_columns:
+            if column == 'Index':
+                continue
             fig, ax = plt.subplots()
-            ax.hist([row.get_value(feature) for row in data[house]], bins=20, alpha=0.5, label=house)
+            ax.hist(data[column][RAVENCLAW], bins=20, alpha=0.5, label=RAVENCLAW, color='blue')
+            ax.hist(data[column][SLYTHERIN], bins=20, alpha=0.5, label=SLYTHERIN, color='green')
+            ax.hist(data[column][HUFFLEPUFF], bins=20, alpha=0.5, label=HUFFLEPUFF, color='yellow')
+            ax.hist(data[column][GRYFFINDOR], bins=20, alpha=0.5, label=GRYFFINDOR, color='red')
+            ax.set_xlabel(column)
+            ax.set_ylabel('Frequency')
+            ax.set_title(column)
+            ax.legend(loc='upper right')
+            plt.show()
