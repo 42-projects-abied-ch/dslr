@@ -9,7 +9,7 @@ def softmax(x: ndarray):
 
 class LogisticRegression:
 
-    def __init__(self, lr=0.001, epochs=1000, n_classes=4):
+    def __init__(self, lr=0.15, epochs=100, n_classes=4):
         self.lr = lr
         self.epochs = epochs
         self.w = None
@@ -61,20 +61,25 @@ def preprocess(df: DataFrame):
 
 def get_training_features():
     parser = argparse.ArgumentParser()
-    parser.add_argument("path", type=str)
+    parser.add_argument("path_train", type=str)
+    parser.add_argument("path_test", type=str)
     args = parser.parse_args()
-    df = DataFrame()
-    df.read_csv(args.path)
-    return preprocess(df)
+    df_train = DataFrame()
+    df_train.read_csv(args.path_train)
+    df_test = DataFrame()
+    df_test.read_csv(args.path_test)
+    X_train, y_train = preprocess(df_train)
+    X_test, y_test = preprocess(df_test)
+    return X_train, y_train, X_test, y_test
 
 
 def main():
-    X, y = get_training_features()
+    X_train, y_train, X_test, y_test = get_training_features()
     lr = LogisticRegression()
-    lr.fit(X, y)
+    lr.fit(X_train, y_train)
     print("Training done")
-    pred = lr.predict(X)
-    print("Accuracy:", np.mean(pred == y))
+    pred = lr.predict(X_test)
+    print("Accuracy:", np.mean(pred == y_test))
 
 if __name__ == "__main__":
     main()
