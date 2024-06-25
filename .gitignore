@@ -1,11 +1,5 @@
-# BUILD
-
-build/
-
 # LOCAL CONFIGS
 
-.clang-format
-compile_flags.txt
 *.json
 
 # CACHE
@@ -13,7 +7,7 @@ compile_flags.txt
 .cache/
 __pycache__/
 
-# TEST ENVIRONMENT
+# VIRTUAL ENVIRONMENT
 
 venv/
 
