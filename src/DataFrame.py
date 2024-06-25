@@ -3,6 +3,12 @@ import tabulate
 from Column import Column
 from Row import Row
 import datetime
+import matplotlib.pyplot as plt
+
+RAVENCLAW = 'Ravenclaw'
+SLYTHERIN = 'Slytherin'
+HUFFLEPUFF = 'Hufflepuff'
+GRYFFINDOR = 'Gryffindor'
 
 class DataFrame:
     def __init__(self):
@@ -54,3 +60,28 @@ class DataFrame:
         for i in range(len(table_data)):
             table_data[i].insert(0, headers[i])
         print(tabulate.tabulate(table_data, tablefmt='pretty'))
+    
+    def scale_features(self) -> None:
+        """
+        Standardize the features for faster convergence.
+        """
+        normilized_data = {}
+        for key, column in self._columns.items():
+            if isinstance(column.get_column_data_without_none()[0], str):
+                continue
+            if isinstance(column.get_column_data_without_none()[0], datetime.datetime):
+                continue
+            mean = column.mean()
+            std = column.std()
+            normilized_data[key] = [(x - mean) / std for x in column.get_column_data_without_none()]
+        return normilized_data
+
+    def get_rows_by_house(self, house):
+        return [row for row in self._rows if row.get_value('Hogwarts House') == house]
+    
+    def histogram_by_houses(self, feature):
+        data = {}
+        for house in [RAVENCLAW, SLYTHERIN, HUFFLEPUFF, GRYFFINDOR]:
+            data[house] = self.get_rows_by_house(house)
+            fig, ax = plt.subplots()
+            ax.hist([row.get_value(feature) for row in data[house]], bins=20, alpha=0.5, label=house)
