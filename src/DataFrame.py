@@ -53,7 +53,9 @@ class DataFrame:
             }
         return description
     
-    def drop_non_numerical(self):
+    def drop_non_numerical(self, index: bool = True):
+        if not index:
+            self._columns.pop('Index')
         pop = []
         for header in self._columns:
             if isinstance(self._columns[header].get_column_data()[0], str):
