@@ -16,3 +16,6 @@ __pycache__/
 # TEST ENVIRONMENT
 
 venv/
+
+# DS_STORE
+.DS_Store
