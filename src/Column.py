@@ -62,7 +62,7 @@ class Column:
         self.name = name
 
     def get_column_name(self):
-        return self.name
+        return self._name
 
     def get_column_data(self):
         return self._data

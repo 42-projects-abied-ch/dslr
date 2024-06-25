@@ -1,86 +1,80 @@
-from DataFrame import DataFrame
+import numpy as np
+from numpy import ndarray
 import argparse
+from DataFrame import DataFrame
 
-def get_arg():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("path", help="Path to the CSV file")
-    args = parser.parse_args()
-    return args
+def softmax(x: ndarray):
+    e_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+    return e_x / np.sum(e_x, axis=-1, keepdims=True)
 
-def preprocess_data(df: DataFrame) -> dict:
+class LogisticRegression:
+
+    def __init__(self, lr=0.001, epochs=1000, n_classes=4):
+        self.lr = lr
+        self.epochs = epochs
+        self.w = None
+        self.b = None
+        self.n_classes = n_classes
+
+    def fit(self, X: ndarray, y: ndarray):
+        n_samples, n_features = X.shape
+        y_encoded = np.zeros((n_samples, self.n_classes))
+        y_encoded[np.arange(n_samples), y] = 1
+
+        self.w = np.zeros((n_features, self.n_classes))
+        self.b = np.zeros((1, self.n_classes))
+
+        for _ in range(self.epochs):
+            y_pred_linear = np.dot(X, self.w) + self.b
+            y_pred = softmax(y_pred_linear)
+
+            dw = (1 / n_samples) * np.dot(X.T, (y_pred - y_encoded))
+            db = (1 / n_samples) * np.sum(y_pred - y_encoded, axis=0)
+
+            self.w = self.w - self.lr * dw
+            self.b = self.b - self.lr * db
+
+    def predict(self, X):
+        y_pred_linear = np.dot(X, self.w) + self.b
+        y_pred = softmax(y_pred_linear)
+        class_pred = np.argmax(y_pred, axis=1)
+        return class_pred
+
+
+def preprocess(df: DataFrame):
+    y = df._columns["Hogwarts House"]
+    y = np.array([0 if x == "Ravenclaw" else 1 if x == "Slytherin" else 2 if x == "Gryffindor" else 3 for x in y._data])
+    
     df.drop_non_numerical(index=False)
     df.fillna_with_mean()
-    df = df.scale_features()
-    return df
+    X = df.scale_features()
+    X = np.array(list(zip(
+        X["Astronomy"],
+        X["Herbology"],
+        X["Charms"],
+        X["Ancient Runes"],
+        X["Defense Against the Dark Arts"],
+        X["Divination"],
+    )))
+    return X, y
 
-def get_targets(df: DataFrame) -> list[int]:
-    targets = df.get_column("Hogwarts House")._data
-    houses = list(set(targets))
-    for i in range(len(targets)):
-        targets[i] = houses.index(targets[i])
-    targets = [[int(x)] for x in targets]
-    return targets
 
-def fill_none_with_mean(training_features):
-    col_sums = [0] * len(training_features[0])
-    col_counts = [0] * len(training_features[0])
-    
-    for row in training_features:
-        for idx, val in enumerate(row):
-            if val is not None:
-                col_sums[idx] += val
-                col_counts[idx] += 1
-    
-    col_means = [col_sums[i] / col_counts[i] if col_counts[i] > 0 else 0 for i in range(len(col_sums))]
-    
-    for row in training_features:
-        for idx, val in enumerate(row):
-            if val is None:
-                row[idx] = col_means[idx]
-    
-    return training_features
-
-def extract_features(df: dict, feature_pairs: list):
-    available_features = list(df.keys())
-    print("Available features after preprocessing:", available_features)
-    training_features = []
-    
-    for i in range(len(next(iter(df.values())))):
-        row_features = []
-        for f1, f2 in feature_pairs:
-            if f1 in df and f2 in df:
-                row_features.append(df.get(f1)[i])
-                row_features.append(df.get(f2)[i])
-            else:
-                print(f"Warning: Feature pair ({f1}, {f2}) contains missing features.")
-                row_features.append(None)
-                row_features.append(None)
-        training_features.append(row_features)
-    
-    return training_features
-
-def main():
-    args = get_arg()
+def get_training_features():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path", type=str)
+    args = parser.parse_args()
     df = DataFrame()
     df.read_csv(args.path)
-    targets = get_targets(df)
-    df = preprocess_data(df)
-    feature_pairs = [
-        ("Astronomy", "Herbology"),
-        ("Astronomy", "Ancient Runes"),
-        ("Astronomy", "Charms"),
-        ("Herbology", "Defence Against the Dark Arts"),
-        ("Herbology", "Ancient Runes"),
-        ("Defence Against the Dark Arts", "Ancient Runes"),
-        ("Defence Against the Dark Arts", "Charms"),
-        ("Divination", "Charms")
-    ]
+    return preprocess(df)
 
-    feature_data = extract_features(df, feature_pairs)
-    feature_data = fill_none_with_mean(feature_data)
-    for i in range(len(feature_data)):
-        print(feature_data[i])
-        print(targets[i])
+
+def main():
+    X, y = get_training_features()
+    lr = LogisticRegression()
+    lr.fit(X, y)
+    print("Training done")
+    pred = lr.predict(X)
+    print("Accuracy:", np.mean(pred == y))
 
 if __name__ == "__main__":
     main()
