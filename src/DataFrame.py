@@ -146,3 +146,32 @@ class DataFrame:
             ax.set_title(column)
             ax.legend(loc='upper right')
             plt.show()
+    
+    def pair_plot(self):
+        data = {}
+        num_columns = self.get_numerical_columns()
+        num_columns.remove('Index')
+        for column in num_columns:
+            data[column] = {
+                RAVENCLAW : [],
+                SLYTHERIN : [],
+                HUFFLEPUFF : [],
+                GRYFFINDOR : []
+            }
+        for house in [RAVENCLAW, SLYTHERIN, HUFFLEPUFF, GRYFFINDOR]:
+            rows = self.get_rows_by_house(house)
+            for column in num_columns:
+                data[column][house] = [float(row.get_value(column)) if row.get_value(column) != '' else float('nan') for row in rows]
+        for i in range(len(num_columns)):
+            for j in range(i + 1, len(num_columns)):
+                fig, ax = plt.subplots()
+                ax.scatter(data[num_columns[i]][RAVENCLAW], data[num_columns[j]][RAVENCLAW], color='blue', label=RAVENCLAW)
+                ax.scatter(data[num_columns[i]][SLYTHERIN], data[num_columns[j]][SLYTHERIN], color='green', label=SLYTHERIN)
+                ax.scatter(data[num_columns[i]][HUFFLEPUFF], data[num_columns[j]][HUFFLEPUFF], color='yellow', label=HUFFLEPUFF)
+                ax.scatter(data[num_columns[i]][GRYFFINDOR], data[num_columns[j]][GRYFFINDOR], color='red', label=GRYFFINDOR)
+                ax.set_xlabel(num_columns[i])
+                ax.set_ylabel(num_columns[j])
+                ax.set_title(f'{num_columns[i]} vs {num_columns[j]}')
+                ax.legend(loc='upper right')
+                plt.show()
+        
