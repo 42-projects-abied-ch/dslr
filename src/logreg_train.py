@@ -2,6 +2,7 @@ import numpy as np
 from numpy import ndarray
 import argparse
 from DataFrame import DataFrame
+import pickle
 
 def softmax(x: ndarray):
     e_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
@@ -44,7 +45,7 @@ class LogisticRegression:
 def preprocess(df: DataFrame):
     y = df._columns["Hogwarts House"]
     y = np.array([0 if x == "Ravenclaw" else 1 if x == "Slytherin" else 2 if x == "Gryffindor" else 3 for x in y._data])
-    
+
     df.drop_non_numerical(index=False)
     df.fillna_with_mean()
     X = df.scale_features()
@@ -59,27 +60,24 @@ def preprocess(df: DataFrame):
     return X, y
 
 
-def get_training_features():
+def get_features():
     parser = argparse.ArgumentParser()
-    parser.add_argument("path_train", type=str)
-    parser.add_argument("path_test", type=str)
+    parser.add_argument("path", type=str)
     args = parser.parse_args()
-    df_train = DataFrame()
-    df_train.read_csv(args.path_train)
-    df_test = DataFrame()
-    df_test.read_csv(args.path_test)
-    X_train, y_train = preprocess(df_train)
-    X_test, y_test = preprocess(df_test)
-    return X_train, y_train, X_test, y_test
+    df = DataFrame()
+    df.read_csv(args.path)
+    return preprocess(df)
 
 
 def main():
-    X_train, y_train, X_test, y_test = get_training_features()
+    X, y = get_features()
     lr = LogisticRegression()
-    lr.fit(X_train, y_train)
-    print("Training done")
-    pred = lr.predict(X_test)
-    print("Accuracy:", np.mean(pred == y_test))
+    lr.fit(X, y)
+    with open("model.pkl", "wb") as file:
+        pickle.dump(lr, file)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(e)
